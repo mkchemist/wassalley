@@ -18,9 +18,17 @@
             <label class="badge badge-soft-info">
                 {{$customer->orders->count()}}
             </label>
-        </td>
+
+        <td><span class="badge badge-danger">{{ \App\CentralLogics\Helpers::set_symbol($customer->totalPayment ) }}</span></td>
         <td class="show-point-{{$customer['id']}}-table">
             {{$customer['point']}}
+        </td>
+        <td>
+            <span class="badge badge-info">
+                {{ $customer['is_active'] ? translate("active") : translate("inactive") }}
+            </span>
+
+        </td>
         </td>
         <td>
             <div class="dropdown">
@@ -29,14 +37,22 @@
                         aria-expanded="false">
                     <i class="tio-settings"></i>
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item"
                        href="{{route('admin.customer.view',[$customer['id']])}}">
                         <i class="tio-visible"></i> {{translate('view')}}
                     </a>
+                    <a href="{{ route('admin.customer.edit', $customer['id']) }}" class="dropdown-item">
+                        <i class="tio-edit"></i> {{ __('messages.edit') }}
+                    </a>
                     <a class="dropdown-item" href="javascript:" onclick="set_point_modal_data('{{route('admin.customer.set-point-modal-data',[$customer['id']])}}')">
                         <i class="tio-coin"></i> {{translate('Add Point')}}
                     </a>
+                    <a href="" class="dropdown-item toggleStatusBtn" data-id="{{ $customer['id'] }}">
+                        <i class="tio-user-switch"></i>
+                        <span>{{ translate('status') }}</span>
+                    </a>
+
                     {{--<a class="dropdown-item" target="" href="">
                         <i class="tio-download"></i> Suspend
                     </a>--}}
@@ -84,4 +100,30 @@
             </div>
         </div>
     </div>-->
+
+    <form action="{{ url('admin/customer/update-state') }}/@id" id="statusForm" method="POST">
+        @csrf
+    </form>
 @endforeach
+
+
+@push('script_2')
+    <script>
+
+        $(document).ready(function () {
+
+            $('.toggleStatusBtn').each(function (index, btn) {
+                /** Change selected customer status */
+                $(btn).click(function (event) {
+                    event.preventDefault();
+                    var statusForm = $('#statusForm');
+                    statusForm.attr('action', statusForm.attr('action').replace('@id', $(this).data('id')))
+                    .submit();
+                })
+
+            });
+
+        });
+
+    </script>
+@endpush

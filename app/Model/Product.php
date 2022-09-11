@@ -19,6 +19,8 @@ class Product extends Model
         'updated_at' => 'datetime'
     ];
 
+    protected $with = ['unit'];
+
     public function getPriceAttribute($price)
     {
         return (float)Helpers::set_price($price);
@@ -63,5 +65,11 @@ class Product extends Model
                 return $query->where('locale', app()->getLocale());
             }]);
         });
+    }
+
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

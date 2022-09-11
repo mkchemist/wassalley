@@ -1281,4 +1281,59 @@
   'Product name has been taken.' => 'Product name has been taken.',
   'Want to delete this attribute ?' => 'Want to delete this attribute  ',
   'Proceed, If thermal printer is ready..' => 'Proceed  If thermal printer is ready..',
+  'units' => 'Units',
+  'add new unit' => 'Add new unit',
+  'incorrect unit value' => 'Value must be increment of :val',
+  'Number is ready to register' => 'Number is ready to register',
+  'update_success' => 'Update success',
+  'The last name field is required.' => 'The last name field is required.',
+  'Config Updated Successfully' => 'Config Updated Successfully',
+  'The first name field is required.' => 'The first name field is required.',
+  'messages.opening' => 'Messages.opening',
+  'Sub Category removed!' => 'Sub Category removed!',
+  'Delivery-man added successfully!' => 'Delivery-man added successfully!',
+  'add wallet point' => 'Add wallet point',
+  'message.phone' => 'Message.phone',
+  'messages.phone' => 'Messages.phone',
+  'f_name' => 'First name',
+  'l_name' => 'Last name',
+  'messages.Status' => 'Messages.Status',
+  'messages.status' => 'Messages.status',
+  'VAddons : ' => 'VAddons : ',
+  'Need time to prepare the
+          food' => 'Need time to prepare the
+          food',
+  '
+                  Change status to unpaid ?' => '
+                  Change status to unpaid  ',
+  '
+                  Change status to paid ?' => '
+                  Change status to paid  ',
+  '
+                  Change status to canceled ?' => '
+                  Change status to canceled  ',
+  '
+                  Change status to failed ?' => '
+                  Change status to failed  ',
+  '
+                  Change status to returned ?' => '
+                  Change status to returned  ',
+  '
+                  Change status to delivered ?' => '
+                  Change status to delivered  ',
+  '
+                  Change status to out for delivery ?' => '
+                  Change status to out for delivery  ',
+  '
+                  Change status to processing ?' => '
+                  Change status to processing  ',
+  '
+                  Change status to confirmed ?' => '
+                  Change status to confirmed  ',
+  '
+                  Change status to pending ?' => '
+                  Change status to pending  ',
+  'Address updated!' => 'Address updated!',
+  'cancel' => 'Cancel',
+  'messages.No data to show' => 'Messages.No data to show',
 );

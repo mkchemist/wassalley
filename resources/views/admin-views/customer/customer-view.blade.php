@@ -34,9 +34,24 @@
                         </span>
                     </div>
                     <div class="row border-top pt-3">
-                        <div class="col-12">
+                        <div class="col-12 d-flex">
                             <a href="{{route('admin.dashboard')}}" class="btn btn-primary">
                                 <i class="tio-home-outlined"></i> {{translate('dashboard')}}
+                            </a>
+                            <a href="{{ route("admin.customer.edit", $customer['id']) }}" class="btn btn-warning mx-1">
+                                <span class="tio-edit"></span>
+                                <span>{{ translate("edit") }}</span>
+                            </a>
+                            <form action="{{ route('admin.customer.toggle-state', $customer['id']) }}" method="POST">
+                                @csrf
+                                <button class="btn btn-info">
+                                    <i class="tio-user-switch"></i>
+                                    <span>{{ translate('status') }}</span>
+                                </button>
+                            </form>
+                            <a href="{{ url()->previous() }}" class="btn btn-dark mx-1">
+                                <span class="tio-arrow-backward"></span>
+                                <span>{{ translate("back") }}</span>
                             </a>
 
                         </div>
@@ -75,6 +90,7 @@
                             <a class="text-capitalize btn btn-primary" href="{{ route('admin.customer.customer_transaction',[$customer['id']]) }}">
                                 {{translate('point')}} {{translate('history')}}
                             </a>
+
                         </h6>
                     </div>
                     <!-- Table -->
@@ -173,6 +189,10 @@
                                 <span
                                     class="text-body text-hover-primary">{{$customer['f_name'].' '.$customer['l_name']}}</span>
 
+                                    <div>
+                                        <span class="tio-checkmark-circle {{ $customer['is_active'] ? 'text-success' : 'text-muted' }}"></span>
+                                        <span>{{ $customer['is_active'] ? 'Active' : 'Inactive' }}</span>
+                                    </div>
                                 </div>
                                 <div class="media-body text-right">
                                     {{--<i class="tio-chevron-right text-body"></i>--}}
@@ -275,8 +295,25 @@
 @endsection
 
 @push('script_2')
+<script src="{{ asset("assets/admin/js/sweet_alert.js") }}"></script>
 
     <script>
+        @if (session('success'))
+
+        Swal.fire({
+            title: "{{ session('success') }}",
+            type: "success",
+
+        })
+        @endif
+        @if (session('error'))
+
+        Swal.fire({
+            title: "{{ session('error') }}",
+            type: "error",
+
+        })
+        @endif
         $(document).on('ready', function () {
             // INITIALIZATION OF DATATABLES
             // =======================================================

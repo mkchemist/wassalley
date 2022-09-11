@@ -19,11 +19,13 @@ class CategoryLogic
 
     public static function products($category_id)
     {
-        $products = Product::active()->get();
+        $products = Product::with([
+            'unit'=> fn($query)=> $query->select('id','name','quantity')
+        ])->active()->get();
         $product_ids = [];
         foreach ($products as $product) {
             foreach (json_decode($product['category_ids'], true) as $category) {
-                if ($category['id'] == $category_id) {
+                if ($category['id'] == $category_id && $category['position'] === 3) {
                     array_push($product_ids, $product['id']);
                 }
             }

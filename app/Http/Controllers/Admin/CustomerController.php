@@ -10,9 +10,11 @@ use App\Model\Order;
 use App\Model\PointTransitions;
 use App\User;
 use Brian2694\Toastr\Facades\Toastr;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
@@ -63,6 +65,12 @@ class CustomerController extends Controller
         }
 
         $customers = $customers->with(['orders'])->latest()->paginate(Helpers::getPagination())->appends($query_param);
+        /**
+         * Append total payment value to each customer
+         */
+        foreach($customers->items() as $customer) {
+            $customer->append('totalPayment');
+        }
         return view('admin-views.customer.list', compact('customers', 'search'));
     }
 
@@ -233,5 +241,99 @@ class CustomerController extends Controller
     }
 
 
+    /**
+     * Show edit form for the given customer
+     *
+     * @param integer $id
+     * @return \Illuminate\Http\Response;
+     */
+    public function edit(int $id)
+    {
+        $user = User::findOrFail($id);
+        return view("admin-views.customer.edit")->with([
+            'user' => $user
+        ]);
+    }
 
+    /**
+     * Update the given customer data
+     *
+     * @param Request $request
+     * @param integer $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, int $id)
+    {
+        $request->validate([
+            'f_name' => 'required|max:255',
+            'l_name' => 'required|max:255',
+            'email' => 'required|max:255|email',
+            'phone' => 'required|numeric',
+            'password' => 'nullable|confirmed',
+        ]);
+
+        $validated = $request->only([
+            'f_name', 'l_name', 'email', 'phone'
+        ]);
+
+        $user = User::findOrFail($id);
+        try {
+
+            DB::beginTransaction();
+
+            $user->update($validated);
+
+            if ($request->has('password')) {
+                $user->password = Hash::make($request->password);
+                $user->save();
+            }
+
+            DB::commit();
+
+            return redirect(route("admin.customer.list"))->with("success", "Customer data updated");
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return back()->with('error', 'Unable to update customer data');
+        }
+    }
+
+    /**
+     * Delete the given customer
+     *
+     * @param integer $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(int $id)
+    {
+
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return back()->with('success', 'Customer deleted');
+
+    }
+
+    /**
+     * Toggle selected customer state active or not active
+     *
+     * @param integer $id
+     * @return Illuminate\Http\Response
+     */
+    public function toggleState(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->is_active) {
+            $user->is_active = false;
+        } else {
+            $user->is_active = true;
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Customer status update');
+    }
 }

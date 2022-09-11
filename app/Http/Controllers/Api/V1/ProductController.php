@@ -18,6 +18,9 @@ class ProductController extends Controller
     {
         $products = ProductLogic::get_latest_products($request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
+        foreach($products['products'] as $product) {
+            $product->amount = $product->unit ? $product->unit->quantity : 1;
+        }
         return response()->json($products, 200);
     }
 
@@ -25,6 +28,9 @@ class ProductController extends Controller
     {
         $products = ProductLogic::get_popular_products($request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
+        foreach($products['products'] as $product) {
+            $product->amount = $product->unit ? $product->unit->quantity : 1;
+        }
         return response()->json($products, 200);
     }
 
@@ -46,7 +52,7 @@ class ProductController extends Controller
                     $query->orWhere('value', 'like', "%{$value}%");
                 }
             })->pluck('translationable_id')->toArray();
-            $paginator = Product::active()->whereIn('id', $ids)->withCount(['wishlist'])->with(['rating'])
+            $paginator = Product::active()->whereIn('id', $ids)->withCount(['wishlist'])->with(['rating','unit'])
                 ->paginate($request['limit'], ['*'], 'page', $request['offset']);
             $products = [
                 'total_size' => $paginator->total(),
@@ -56,6 +62,9 @@ class ProductController extends Controller
             ];
         }
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
+        foreach($products['products'] as $product) {
+            $product->amount = $product->unit ? $product->unit->quantity : 1;
+        }
         return response()->json($products, 200);
     }
 
@@ -64,6 +73,7 @@ class ProductController extends Controller
         try {
             $product = ProductLogic::get_product($id);
             $product = Helpers::product_data_formatting($product, false);
+            $product->amount =$product->unit ? $product->unit->quantity : 1;
             return response()->json($product, 200);
         } catch (\Exception $e) {
             return response()->json([

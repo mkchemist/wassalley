@@ -151,6 +151,11 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::post('update-shipping/{id}', 'OrderController@update_shipping')->name('update-shipping');
             Route::delete('delete/{id}', 'OrderController@delete')->name('delete');
             Route::get('export', 'OrderController@export_data')->name('export');
+            Route::get('edit/{id}', 'OrderController@edit')->name('edit');
+            Route::put('update/{id}', 'OrderController@update')->name('update');
+            Route::get('product/show/{id}', 'OrderController@viewProduct')->name('view-product');
+            Route::post('product/add', 'OrderController@addOrderProduct')->name('product.add');
+            Route::delete('product/delete/{id}', 'OrderController@deleteOrderDetail')->name('product.delete');
         });
 
         Route::group(['prefix' => 'category', 'as' => 'category.','middleware'=>['module:product_management']], function () {
@@ -279,17 +284,17 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
 
 
 
-            /*Route::get('currency-add', 'BusinessSettingsController@currency_index')->name('currency-add');
+            /* Route::get('currency-add', 'BusinessSettingsController@currency_index')->name('currency-add');
             Route::post('currency-add', 'BusinessSettingsController@currency_store');
             Route::get('currency-update/{id}', 'BusinessSettingsController@currency_edit')->name('currency-update');
             Route::put('currency-update/{id}', 'BusinessSettingsController@currency_update');
-            Route::delete('currency-delete/{id}', 'BusinessSettingsController@currency_delete')->name('currency-delete');*/
+            Route::delete('currency-delete/{id}', 'BusinessSettingsController@currency_delete')->name('currency-delete');
 
 
 
-//            Route::group(['prefix' => '3rdparty-setup', 'as' => 'page-setup.'], function () {
-//
-//            });
+           Route::group(['prefix' => '3rdparty-setup', 'as' => 'page-setup.'], function () {
+
+           }); */
 
             Route::group(['prefix' => 'page-setup', 'as' => 'page-setup.','middleware'=>['module:business_management']], function () {
                 Route::get('terms-and-conditions', 'BusinessSettingsController@terms_and_conditions')->name('terms-and-conditions')->middleware('actch');
@@ -339,6 +344,9 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('set-point-modal-data/{id}', 'CustomerController@set_point_modal_data')->name('set-point-modal-data');
             Route::get('list', 'CustomerController@customer_list')->name('list');
             Route::get('view/{user_id}', 'CustomerController@view')->name('view');
+            Route::get('edit/{id}', 'CustomerController@edit')->name('edit');
+            Route::put('/{id}', 'CustomerController@update')->name('update');
+            Route::post('/update-state/{id}', 'CustomerController@toggleState')->name('toggle-state');
             Route::post('search', 'CustomerController@search')->name('search');
             Route::post('AddPoint/{id}', 'CustomerController@AddPoint')->name('AddPoint');
             Route::get('transaction', 'CustomerController@transaction')->name('transaction');
@@ -350,6 +358,11 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::post('message-notification', 'CustomerController@message_notification')->name('message_notification');
             Route::post('chat-image-upload', 'CustomerController@chat_image_upload')->name('chat_image_upload');
         });
+
+        /**
+         * Units routes
+         */
+        Route::resource('units', 'UnitController');
     });
 });
 

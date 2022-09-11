@@ -125,6 +125,7 @@
                 <div class="d-flex justify-content-between">
                     <div class="product-description-label mt-2 text-dark h3">{{translate('Quantity')}}:</div>
                     <div class="product-quantity d-flex align-items-center">
+                        <span>{{ $product->unit ? $product->unit->name : 'Unit' }}</span>
                         <div class="input-group input-group--style-2 pr-3"
                              style="width: 160px;">
                             <span class="input-group-btn">
@@ -136,13 +137,14 @@
                             </span>
                             <input type="text" name="quantity"
                                    class="form-control input-number text-center cart-qty-field"
-                                   placeholder="1" value="1" min="1" max="100">
+                                   placeholder="1" value="{{ $product->unit ? $product->unit->quantity :1 }}" min="{{ $product->unit ? $product->unit->quantity :1 }}" step="{{ $product->unit ? $product->unit->quantity :1 }}" max="100">
                             <span class="input-group-btn">
                                 <button class="btn btn-number text-dark" type="button" data-type="plus"
                                         data-field="quantity" style="padding: 10px">
                                         <i class="tio-add  font-weight-bold"></i>
                                 </button>
                             </span>
+                            
                         </div>
                     </div>
                 </div>
@@ -198,6 +200,7 @@
                         <i class="tio-shopping-cart"></i>
                         {{translate('add')}}
                     </button>
+                    
                 </div>
             </form>
         </div>

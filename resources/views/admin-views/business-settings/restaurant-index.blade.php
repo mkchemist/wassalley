@@ -495,6 +495,20 @@
                                     </select>
                                 </div>
                             </div>
+                            @php($openTime=\App\Model\BusinessSetting::where('key','restaurant_open_time')->first()->value)
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="restaurant_open_time" class="input-label">{{ __("messages.opening") }}</label>
+                                    <input type="time" name="restaurant_open_time" id="restaurant_open_time" class="form-control" value="{{ $openTime }}">
+                                </div>
+                            </div>
+                            @php($closeTime=\App\Model\BusinessSetting::where('key','restaurant_close_time')->first()->value)
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="restaurant_close_time" class="input-label">{{ __("messages.closing") }}</label>
+                                    <input type="time" name="restaurant_close_time" id="restaurant_close_time" class="form-control" value="{{ $closeTime }}">
+                                </div>
+                            </div>
                             @php($phone=\App\Model\BusinessSetting::where('key','phone')->first()->value)
                             <div class="col-md-4 col-12">
                                 <div class="form-group">

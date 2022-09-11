@@ -147,7 +147,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlSelect1">{{translate('category')}}<span
                                             class="input-label-secondary">*</span></label>
@@ -160,7 +160,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlSelect1">{{translate('sub_category')}}<span
                                             class="input-label-secondary"></span></label>
@@ -172,7 +172,7 @@
                                     </select>
                                 </div>
                             </div>
-                            {{--<div class="col-md-4 col-6">
+                            <div class="col-md-4 col-6">
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlSelect1">Sub Sub Category<span
                                             class="input-label-secondary"></span></label>
@@ -182,7 +182,7 @@
 
                                     </select>
                                 </div>
-                            </div>--}}
+                            </div>
                         </div>
 
                         <div class="row" style="border: 1px solid #80808045; border-radius: 10px;padding-top: 10px;margin: 1px">
@@ -245,21 +245,34 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label>{{translate('product')}} {{translate('image')}}</label><small style="color: red">* ( {{translate('ratio')}} 1:1 )</small>
-                            <div class="custom-file">
-                                <input type="file" name="image" id="customFileEg1" class="custom-file-input"
-                                       accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
-                                <label class="custom-file-label" for="customFileEg1">{{translate('choose')}} {{translate('file')}}</label>
+                        <div class="row mx-auto">
+                            {{-- Product Unit --}}
+                            <div class="form-group col-lg px-0">
+                                <div>
+                                    <label for="">Unit</label>
+                                    <select name="unit_id" id="unit_id" class="form-control js-select2-custom">
+                                        <option value="" >Select Unit</option>
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->id }}" {{ $product->unit_id == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-
-                            <center style="display: block" id="image-viewer-section" class="pt-2">
-                                <img style="height: 200px;border: 1px solid; border-radius: 10px;" id="viewer"
-                                     src="{{asset('storage/app/public/product')}}/{{$product['image']}}"
-                                     onerror="this.src='{{asset('public/assets/admin/img/400x400/img2.jpg')}}'"
-                                     alt="product image"/>
-                            </center>
+                            <div class="form-group col-lg-8 mx-1">
+                                <label>{{translate('product')}} {{translate('image')}}</label><small style="color: red">* ( {{translate('ratio')}} 1:1 )</small>
+                                <div class="custom-file">
+                                    <input type="file" name="image" id="customFileEg1" class="custom-file-input"
+                                           accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
+                                    <label class="custom-file-label" for="customFileEg1">{{translate('choose')}} {{translate('file')}}</label>
+                                </div>
+    
+                                <center style="display: block" id="image-viewer-section" class="pt-2">
+                                    <img style="height: 200px;border: 1px solid; border-radius: 10px;" id="viewer"
+                                         src="{{asset('storage/app/public/product')}}/{{$product['image']}}"
+                                         onerror="this.src='{{asset('public/assets/admin/img/400x400/img2.jpg')}}'"
+                                         alt="product image"/>
+                                </center>
+                            </div>
                         </div>
                     </div>
                     <hr>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Category;
+use App\Model\Unit;
 use App\Model\Product;
 use App\Model\Review;
 use App\Model\Translation;
@@ -69,7 +70,8 @@ class ProductController extends Controller
     public function index()
     {
         $categories = Category::where(['position' => 0])->get();
-        return view('admin-views.product.index', compact('categories'));
+        $units = Unit::select('id', 'name')->get();
+        return view('admin-views.product.index', compact('categories', 'units'));
     }
 
     public function list(Request $request)
@@ -88,7 +90,10 @@ class ProductController extends Controller
         } else {
             $query = new Product();
         }
-        $products = $query->orderBy('id', 'DESC')->paginate(Helpers::getPagination())->appends($query_param);
+        $products = $query->with([
+            'unit' => fn ($query) => $query->select('id', 'name')
+        ])
+        ->orderBy('id', 'DESC')->paginate(Helpers::getPagination())->appends($query_param);
         return view('admin-views.product.list', compact('products', 'search'));
     }
 
@@ -234,7 +239,7 @@ class ProductController extends Controller
 
         $product->attributes = $request->has('attribute_id') ? json_encode($request->attribute_id) : json_encode([]);
         $product->add_ons = $request->has('addon_ids') ? json_encode($request->addon_ids) : json_encode([]);
-
+        $product->unit_id = $request->unit_id;
         $product->save();
 
         $data = [];
@@ -270,7 +275,9 @@ class ProductController extends Controller
         $product = Product::withoutGlobalScopes()->with('translations')->find($id);
         $product_category = json_decode($product->category_ids);
         $categories = Category::where(['parent_id' => 0])->get();
-        return view('admin-views.product.edit', compact('product', 'product_category', 'categories'));
+        $units = Unit::select('id', 'name')->get();
+
+        return view('admin-views.product.edit', compact('product', 'product_category', 'categories', 'units'));
     }
 
     public function status(Request $request)
@@ -391,7 +398,7 @@ class ProductController extends Controller
 
         $product->attributes = $request->has('attribute_id') ? json_encode($request->attribute_id) : json_encode([]);
         $product->add_ons = $request->has('addon_ids') ? json_encode($request->addon_ids) : json_encode([]);
-
+        $product->unit_id = $request->unit_id;
         $product->save();
 
         foreach ($request->lang as $index => $key) {

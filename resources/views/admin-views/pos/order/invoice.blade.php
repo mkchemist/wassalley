@@ -1,6 +1,7 @@
 <div style="width:410px; overflow-x: scroll;">
     <div class="text-center pt-4 mb-3 w-100">
-        <h2 style="line-height: 1">{{\App\Model\BusinessSetting::where(['key'=>'restaurant_name'])->first()->value}}</h2>
+        <img src="{{ asset('storage/app/public/restaurant/'.\App\Model\BusinessSetting::where(['key'=>'logo'])->first()->value ) }}" alt="" width="150">
+        <h2 class="mt-3" style="line-height: 1">{{\App\Model\BusinessSetting::where(['key'=>'restaurant_name'])->first()->value}}</h2>
         <h5 style="font-size: 20px;font-weight: lighter;line-height: 1">
             {{\App\Model\BusinessSetting::where(['key'=>'address'])->first()->value}}
         </h5>
@@ -36,9 +37,10 @@
     <table class="table table-bordered mt-3" style="width: 98%">
         <thead>
         <tr>
-            <th style="width: 10%">{{translate('QTY')}}</th>
             <th class="">{{translate('DESC')}}</th>
+            <th style="width: 10%">{{translate('QTY')}}</th>
             <th class="">{{translate('Price')}}</th>
+            <th>Total</th>
         </tr>
         </thead>
 
@@ -51,9 +53,6 @@
             @if($detail->product)
                 @php($add_on_qtys=json_decode($detail['add_on_qtys'],true))
                 <tr>
-                    <td class="">
-                        {{$detail['quantity']}}
-                    </td>
                     <td class="">
                         <span style="word-break: break-all;"> {{ Str::limit($detail->product['name'], 200) }}</span><br>
                         @if(count(json_decode($detail['variation'],true))>0)
@@ -88,6 +87,10 @@
 
                         {{translate('Discount')}} : {{ \App\CentralLogics\Helpers::set_symbol($detail['discount_on_product']*$detail['quantity']) }}
                     </td>
+                    <td class="">
+                        {{$detail['quantity']}}
+                    </td>
+                    <td>{{ $detail['price']-$detail['discount_on_product'] }}</td>
                     <td style="width: 28%">
                         @php($amount=($detail['price']-$detail['discount_on_product'])*$detail['quantity'])
                         {{ \App\CentralLogics\Helpers::set_symbol($amount) }}

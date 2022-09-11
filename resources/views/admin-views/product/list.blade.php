@@ -56,6 +56,7 @@
                                 <th>{{translate('#')}}</th>
                                 <th style="width: 30%">{{translate('name')}}</th>
                                 <th style="width: 25%">{{translate('image')}}</th>
+                                <th style="width: 25%">{{ __("messages.units") }}</th>
                                 <th>{{translate('status')}}</th>
                                 <th>{{translate('price')}}</th>
                                 <th>{{translate('action')}}</th>
@@ -80,6 +81,7 @@
                                                  onerror="this.src='{{asset('public/assets/admin/img/160x160/img2.jpg')}}'">
                                         </div>
                                     </td>
+                                    <td>{{ $product->unit? $product->unit->name: '' }}</td>
                                     <td>
                                         @if($product['status']==1)
                                             <div style="padding: 10px;border: 1px solid;cursor: pointer"

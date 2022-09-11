@@ -77,9 +77,9 @@
             <!-- End Header -->
 
             <!-- Table -->
-            <div class="table-responsive datatable-custom">
-                <table class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table"
-                       style="width: 100%">
+            <div class="">
+                <table class="table table-hover table-borderless table-thead-bordered  table-align-middle card-table pb-5 table-sm"
+                       style="width: 100%;">
                     <thead class="thead-light">
                     <tr>
                         <th class="">
@@ -89,7 +89,9 @@
                         <th>{{translate('email')}}</th>
                         <th>{{translate('phone')}}</th>
                         <th>{{translate('total')}} {{translate('order')}}</th>
+                        <th>Payment</th>
                         <th>{{translate('available')}} {{translate('points')}}</th>
+                        <th>{{ translate("Status") }}</th>
                         <th>{{translate('actions')}}</th>
                     </tr>
                     </thead>
@@ -122,7 +124,26 @@
 @endsection
 
 @push('script_2')
+    <script src="{{ asset("assets/admin/js/sweet_alert.js") }}"></script>
     <script>
+
+        @if (session('success'))
+
+        Swal.fire({
+            title: "{{ session('success') }}",
+            type: "success",
+
+        })
+        @endif
+        @if (session('error'))
+
+        Swal.fire({
+            title: "{{ session('error') }}",
+            type: "error",
+
+        })
+        @endif
+
         $('#search-form').on('submit', function () {
             var formData = new FormData(this);
             $.ajaxSetup({

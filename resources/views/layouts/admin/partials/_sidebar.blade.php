@@ -259,7 +259,18 @@
                                 </ul>
                             </li>
                             <!-- End Pages -->
-
+                            <!-- Pages -->
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/units*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                   href="{{route('admin.units.index')}}"
+                                >
+                                    <i class="tio-add-circle-outlined nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{translate('units')}}
+                                    </span>
+                                </a>
+                            </li>
+                            <!-- End Pages -->
 
                             <!-- Pages -->
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/attribute*')?'active':''}}">

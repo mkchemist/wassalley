@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerAuthController extends Controller
 {
@@ -182,6 +183,7 @@ class CustomerAuthController extends Controller
 
     public function login(Request $request)
     {
+
         if($request->has('email_or_phone')) {
             $user_id = $request['email_or_phone'];
             $validator = Validator::make($request->all(), [
@@ -201,6 +203,7 @@ class CustomerAuthController extends Controller
         }
 
         $user = User::where(['email' => $user_id])->orWhere('phone', $user_id)->first();
+
         if (isset($user)) {
             $user->temporary_token = Str::random(40);
             $user->save();
@@ -213,6 +216,10 @@ class CustomerAuthController extends Controller
                 $token = auth()->user()->createToken('RestaurantCustomerAuth')->accessToken;
                 return response()->json(['token' => $token], 200);
             }
+            /* if (Hash::check($request->password,$user->password)) {
+                $token = auth()->user()->createToken('RestaurantCustomerAuth')->accessToken;
+                return response()->json(['token' => $token], 200);
+            } */
         }
 
         $errors = [];

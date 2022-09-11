@@ -50,7 +50,7 @@
 @section('content')
 
     <div class="content container-fluid" style="color: black">
-        <div class="row" id="printableArea" style="font-family: emoji;">
+        <div class="row" id="printableArea" {{-- style="font-family: emoji;" --}}>
             <div class="col-md-12">
                 <center>
                     <input type="button" class="btn btn-primary non-printable" onclick="printDiv('printableArea')"
@@ -61,11 +61,12 @@
             </div>
             <div class="col-5">
                 <div class="text-center pt-4 mb-3">
-                    <h2 style="line-height: 1">{{\App\Model\BusinessSetting::where(['key'=>'restaurant_name'])->first()->value}}</h2>
-                    <h5 style="font-size: 20px;font-weight: lighter;line-height: 1">
+                    <img src="{{ asset('storage/app/public/restaurant/'.\App\Model\BusinessSetting::where(['key'=>'logo'])->first()->value ) }}" alt="" width="150">
+                    <h2 style="line-height: 1" class="mt-3">{{\App\Model\BusinessSetting::where(['key'=>'restaurant_name'])->first()->value}}</h2>
+                    <h5 >
                         {{\App\Model\BusinessSetting::where(['key'=>'address'])->first()->value}}
                     </h5>
-                    <h5 style="font-size: 16px;font-weight: lighter;line-height: 1">
+                    <h5 >
                         Phone : {{\App\Model\BusinessSetting::where(['key'=>'phone'])->first()->value}}
                     </h5>
                 </div>
@@ -101,9 +102,10 @@
                 <table class="table table-bordered mt-3" style="width: 98%;color: black!important;">
                     <thead>
                     <tr>
-                        <th style="width: 10%">{{translate('QTY')}}</th>
                         <th class="">{{translate('DESC')}}</th>
+                        <th style="width: 10%">{{translate('QTY')}}</th>
                         <th class="">{{translate('Price')}}</th>
+                        <th>Total</th>
                     </tr>
                     </thead>
 
@@ -116,9 +118,6 @@
                         @if($detail->product)
                             @php($add_on_qtys=json_decode($detail['add_on_qtys'],true))
                             <tr>
-                                <td class="">
-                                    {{$detail['quantity']}}
-                                </td>
                                 <td class="">
                                     {{$detail->product['name']}} <br>
                                     @if(count(json_decode($detail['variation'],true))>0)
@@ -151,6 +150,12 @@
                                     @endforeach
 
                                     {{translate('Discount : ')}}{{ \App\CentralLogics\Helpers::set_symbol($detail['discount_on_product']) }}
+                                </td>
+                                <td class="">
+                                    {{$detail['quantity']}}
+                                </td>
+                                <td>
+                                    {{ $detail->product['price']}}
                                 </td>
                                 <td style="width: 28%">
                                     @php($amount=($detail['price']-$detail['discount_on_product'])*$detail['quantity'])

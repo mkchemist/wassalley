@@ -23,7 +23,7 @@ class CreateOrderDetailsTable extends Migration
             $table->bigInteger('add_on_id')->nullable();
             $table->decimal('discount_on_product')->nullable();
             $table->string('discount_type',20)->default('amount');
-            $table->integer('quantity')->default(1);
+            $table->decimal('quantity',10,4)->default(1);
             $table->decimal('tax_amount')->default(1);
             $table->timestamps();
         });

@@ -31,7 +31,11 @@ class CategoryController extends Controller
 
     public function get_products($id)
     {
-        return response()->json(Helpers::product_data_formatting(CategoryLogic::products($id), true), 200);
+        $products = Helpers::product_data_formatting(CategoryLogic::products($id), true);
+        foreach($products as $product) {
+            $product->amount = $product->unit ? $product->unit->quantity : 1;
+        }
+        return response()->json($products, 200);
     }
 
     public function get_all_products($id)

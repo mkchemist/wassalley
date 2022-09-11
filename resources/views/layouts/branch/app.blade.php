@@ -126,7 +126,7 @@
         @endforeach
     </script>
 @endif
-<!-- JS Plugins Init. -->
+<!-- JS Plugins Init -->
 <script>
     $(document).on('ready', function () {
         // ONLY DEV

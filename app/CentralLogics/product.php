@@ -11,12 +11,19 @@ class ProductLogic
 {
     public static function get_product($id)
     {
-        return Product::active()->with(['rating'])->where('id', $id)->first();
+        return Product::active()->with([
+            'rating',
+            'unit' => fn($query)=> $query->select('id','name','quantity')
+
+            ])->where('id', $id)->first();
     }
 
     public static function get_latest_products($limit = 10, $offset = 1)
     {
-        $paginator = Product::active()->with(['rating'])->latest()->paginate($limit, ['*'], 'page', $offset);
+        $paginator = Product::active()->with([
+            'rating',
+            'unit' => fn($query)=> $query->select('id','name','quantity')
+        ])->latest()->paginate($limit, ['*'], 'page', $offset);
         /*$paginator->count();*/
         return [
             'total_size' => $paginator->total(),
@@ -66,7 +73,7 @@ class ProductLogic
     public static function search_products($name, $limit = 10, $offset = 1)
     {
         $key = explode(' ', $name);
-        $paginator = Product::active()->with(['rating'])->where(function ($q) use ($key) {
+        $paginator = Product::active()->with(['rating', 'unit'])->where(function ($q) use ($key) {
             foreach ($key as $value) {
                 $q->orWhere('name', 'like', "%{$value}%");
             }

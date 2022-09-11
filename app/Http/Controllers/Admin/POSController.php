@@ -55,7 +55,9 @@ class POSController extends Controller
 
     public function variant_price(Request $request)
     {
-        $product = Product::find($request->id);
+        $product = Product::with([
+            'unit' => fn ($query) => $query->select('id', 'name', 'quantity')
+        ])->find($request->id);
         $str = '';
         $quantity = 0;
         $price = 0;
@@ -158,7 +160,7 @@ class POSController extends Controller
 
     public function addToCart(Request $request)
     {
-        $product = Product::find($request->id);
+        $product = Product::with('unit')->find($request->id);
 
         $data = array();
         $data['id'] = $product->id;
@@ -210,6 +212,10 @@ class POSController extends Controller
         $data['image'] = $product->image;
         $data['add_ons'] = [];
         $data['add_on_qtys'] = [];
+        $data['unit'] = [
+            'name' => $product->unit ? $product->unit->name : '',
+            'quantity' => $product->unit ? $product->unit->quantity : 1
+        ];
 
         if ($request['addon_id']) {
             foreach ($request['addon_id'] as $id) {
@@ -417,7 +423,6 @@ class POSController extends Controller
     public function generate_invoice($id)
     {
         $order = Order::where('id', $id)->first();
-
         return response()->json([
             'success' => 1,
             'view' => view('admin-views.pos.order.invoice', compact('order'))->render(),
