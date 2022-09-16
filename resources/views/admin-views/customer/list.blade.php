@@ -59,6 +59,23 @@
         <div class="card">
             <!-- Header -->
             <div class="card-header flex-end">
+              <form action="{{ url()->current() }}" method="GET" id="customerStateForm">
+                <div class="d-flex">
+                  <div class="form-check-inline mx-2">
+                    <input type="radio" name="customer_state"  class='form-check-input' {{ request('customer_state') && request('customer_state') === 'all' ? 'checked': '' }} value="all">
+                    <label for="" class="form-check-label">{{ translate('all') }}</label>
+                  </div>
+                  <div class="form-check-inline mx-2">
+                    <input type="radio" name="customer_state"  class='form-check-input' {{ !request('customer_state') || request('customer_state') === 'active' ? 'checked': '' }} value="active">
+                    <label for="" class="form-check-label">{{ translate('current') }}</label>
+                  </div>
+                  <div class="form-check-inline mx-2">
+                    <input type="radio" name="customer_state"  class='form-check-input' {{ request('customer_state') && request('customer_state') === 'inactive' ? 'checked': '' }} value="inactive">
+                    <label for="" class="form-check-label">{{ translate('deleted') }}</label>
+                  </div>
+
+                </div>
+              </form>
                 <div class="">
                     <form action="{{url()->current()}}" method="GET">
                         <div class="input-group">
@@ -120,6 +137,16 @@
                 <div class="modal-content" id="modal-content"></div>
             </div>
         </div>
+
+
+        <div class="modal fade" id="remove_point_modal">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+            </div>
+          </div>
+        </div>
+
     </div>
 @endsection
 
@@ -207,5 +234,71 @@
                 },
             });
         }
+
+
+      [].slice.call(document.querySelectorAll('[name="customer_state"]')).forEach((radio) => {
+        radio.addEventListener('click', function () {
+          document.getElementById('customerStateForm').submit();
+        })
+      });
+
+      /**
+       * Delete selected row
+       * @param {HTMLElement} current button
+       * @param {Number} id [customer id]
+       */
+      function deleteCustomer(element, id) {
+        window.event.preventDefault();
+        Swal.fire({
+          title: "{{ translate('Are you sure to delete this') }}",
+          showCancelButton: true,
+          cancelButtonText: "{{ translate('no') }}",
+          confirmButtonText: "{{ translate('yes') }}",
+          type: 'warning',
+          cancelButtonColor: '#282830',
+          confirmButtonColor: '#f10500'
+        }).then((response) => {
+          if (response.value) {
+            var url = `{{ url('admin/customer/delete') }}/${id}`;
+            element.parentElement.action = url;
+            element.parentElement.submit();
+          }
+        })
+      }
+      /**
+       * Restore selected row
+       * @param {HTMLElement} current button
+       * @param {Number} id [customer id]
+       */
+      function restoreCustomer(element, id) {
+        window.event.preventDefault();
+        Swal.fire({
+          title: "Are you sure to restore this",
+          showCancelButton: true,
+          cancelButtonText: "{{ translate('no') }}",
+          confirmButtonText: "{{ translate('yes') }}",
+          type: 'warning',
+          cancelButtonColor: '#282830',
+          confirmButtonColor: '#180'
+        }).then((response) => {
+          if (response.value) {
+            var url = `{{ url('admin/customer/restore') }}/${id}`;
+            element.parentElement.action = url;
+            element.parentElement.submit();
+          }
+        })
+      }
+
+      function removeCustomerPoints(url) {
+        fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          $('#remove_point_modal .modal-content').html(data.view);
+          $('#remove_point_modal').modal('show');
+        }).catch((err) => {
+          console.log(err);
+        })
+      }
+
     </script>
 @endpush

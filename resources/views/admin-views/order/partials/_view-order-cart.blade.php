@@ -1,12 +1,24 @@
 @php
+// get current variant
 $currentVariant = collect($variations)->filter(function ($item) use($product) {
-  //dd($item->price, $product->price, (float) $item->price, (float) $product->price );
-  return (float)$item->price === (float)$product->price;
+return (float)$item->price === (float)$product->price;
 })->first();
 
 if ($currentVariant) {
-  $currentVariant = explode('-', $currentVariant->type);
+$currentVariant = explode('-', $currentVariant->type);
 }
+$price = $product->price;
+$quantity = $product->unit->quantity;
+
+// if product already in order
+if ($detail) {
+$currentVariant = json_decode($detail->variation)[0];
+$currentVariant = explode('-', $currentVariant->type);
+$price = $detail ? $detail->price : $product->price;
+$quantity = $detail->quantity;
+
+}
+
 
 
 @endphp
@@ -19,27 +31,30 @@ if ($currentVariant) {
   }
 
   .qty-form {
-    margin:5px 0;
-    position:relative;
-    width:100%;
-    display:inline-flex;
+    margin: 5px 0;
+    position: relative;
+    width: 100%;
+    display: inline-flex;
   }
+
   .qty-form button {
-    width:25%;
-    border:1px solid #1113;
+    width: 25%;
+    border: 1px solid #1113;
     background-color: #282830;
-    color:white;
+    color: white;
     border-radius: 5px;
   }
 
   .qty-form input {
-    width:50%;
-    border:none;
+    width: 50%;
+    border: none;
     text-align: center;
   }
 </style>
 
-
+<div class="modal-header">
+  <button class="close" style="font-size:28px" data-dismiss="modal" type="button">&times;</button>
+</div>
 <div class="modal-body">
   {{-- product info --}}
   <div class="row mx-auto">
@@ -49,7 +64,7 @@ if ($currentVariant) {
     </div>
     <div class="col-md-7">
       <h4 class="text-primary">{{ $product->name }}</h4>
-      <h5>{{ \App\CentralLogics\Helpers::set_symbol($product->price) }}</h5>
+      <h5>{{ \App\CentralLogics\Helpers::set_symbol($price) }}</h5>
     </div>
   </div>
   {{-- end product info. --}}
@@ -65,9 +80,11 @@ if ($currentVariant) {
         <div class="col-md-2">{{ $choice->title }}</div>
         <div class="col-md-10 row mx-auto">
           @foreach ($choice->options as $key => $option)
-          <div class="col-md-auto border rounded  mx-2 btn-check {{ in_array($option, $currentVariant) ? 'checked-btn-check': '' }}" data-selector="{{ $choice->name }}">
+          <div
+            class="col-md-auto border rounded  mx-2 btn-check {{ in_array(trim($option), $currentVariant) ? 'checked-btn-check': '' }}"
+            data-selector="{{ $choice->name }}">
             <input type="radio" name="{{ $choice->name }}" id="{{ $choice->name }}_{{ $key }}" class='d-none'
-              value="{{ $option }}" {{ in_array($option, $currentVariant) ? 'checked': '' }}>
+              value="{{ $option }}" {{ in_array(trim($option), $currentVariant) ? 'checked' : '' }}>
             <label for="{{ $choice->name }}_{{ $key }}">{{ $option }}</label>
           </div>
           @endforeach
@@ -84,9 +101,13 @@ if ($currentVariant) {
         </div>
         <div class="col-md-auto form-inline">
           <span class="">{{ $product->unit->name }}</span>
-          <button class="btn btn-sm btn-light border mx-1" type="button" onclick="updateProductQuantity('quantity', 'dec')">-</button>
-          <input type="number" min="{{ $product->unit->quantity }}" name="quantity" id="quantity" value="{{ $product->unit->quantity }}" class="form-control form-control-sm col-6 mx-1" step="{{ $product->unit->quantity }}" readonly>
-          <button class="btn btn-sm btn-light border" type="button" onclick="updateProductQuantity('quantity', 'inc')">+</button>
+          <button class="btn btn-sm btn-light border mx-1" type="button"
+            onclick="updateProductQuantity('quantity', 'dec')">-</button>
+          <input type="number" min="{{ $product->unit->quantity }}" name="quantity" id="quantity"
+            value="{{ $quantity }}" class="form-control form-control-sm col-6 mx-1"
+            step="{{ $product->unit->quantity }}" readonly>
+          <button class="btn btn-sm btn-light border" type="button"
+            onclick="updateProductQuantity('quantity', 'inc')">+</button>
         </div>
       </div>
     </div>
@@ -97,20 +118,22 @@ if ($currentVariant) {
       @if (count($addOns) > 0)
       <div class="row mx-auto">
         @foreach ($addOns as $key => $addOn)
-          <div class="col-md-3 mx-1 px-0">
-            <div class="d-flex align-items-center justify-content-center border rounded" data-indicator="addon_{{ $key }}" style="height:100px;cursor: pointer" onclick="updateAddOnQuantity('addon_{{ $key }}', 'inc')" >
-              <div class="font-weight-bold">
-                <p class="mb-0">{{ $addOn->name }}</p>
-                <p class="mb-0">{{ \App\CentralLogics\Helpers::set_symbol($addOn->price) }}</p>
-              </div>
-            </div>
-            <div class="qty-form d-none" id="qty_form_addon_{{ $key }}">
-              <button type="button" onclick="updateAddOnQuantity('addon_{{ $key }}', 'dec')">-</button>
-              <input type="hidden" name="add_on_id[]" value="{{ $addOn->id }}">
-              <input type="number" min="0" name="add_on_qtys[]" id="addon_{{ $key }}" value="0" data-item="{{ $addOn->name }}" data-price="{{ $addOn->price }}" step="1" >
-              <button type="button" onclick="updateAddOnQuantity('addon_{{ $key }}', 'inc')">+</button>
+        <div class="col-md-3 mx-1 px-0">
+          <div class="d-flex align-items-center justify-content-center border rounded {{ $addOn->quantity ? 'checked-btn-check': '' }}" data-indicator="addon_{{ $key }}"
+            style="height:100px;cursor: pointer" onclick="updateAddOnQuantity('addon_{{ $key }}', 'inc')">
+            <div class="font-weight-bold">
+              <p class="mb-0">{{ $addOn->name }}</p>
+              <p class="mb-0">{{ \App\CentralLogics\Helpers::set_symbol($addOn->price) }}</p>
             </div>
           </div>
+          <div class="qty-form {{ $addOn->quantity ? '' : 'd-none' }}" id="qty_form_addon_{{ $key }}">
+            <button type="button" onclick="updateAddOnQuantity('addon_{{ $key }}', 'dec')">-</button>
+            <input type="hidden" name="add_on_id[]" value="{{ $addOn->id }}">
+            <input type="number" min="0" name="add_on_qtys[]" id="addon_{{ $key }}" value="{{ $addOn->quantity??0 }}"
+              data-item="{{ $addOn->name }}" data-price="{{ $addOn->price }}" step="1">
+            <button type="button" onclick="updateAddOnQuantity('addon_{{ $key }}', 'inc')">+</button>
+          </div>
+        </div>
         @endforeach
       </div>
       @endif
@@ -119,7 +142,7 @@ if ($currentVariant) {
     {{-- Order Total Price --}}
     <div class="my-3 h3">
       {{ translate('total') }} {{ translate('price') }}:
-      <span id="order_total_price">{{ $product->price * $product->unit->quantity }}</span>
+      <span id="order_total_price">{{ ($price * $quantity) + $addOnPrice }}</span>
     </div>
     {{-- End Order Total Price --}}
     <div class="text-center">
@@ -136,10 +159,11 @@ if ($currentVariant) {
 
 <script>
   var btnChecks = Array.prototype.slice.call(document.querySelectorAll('.btn-check'));
-  var productPrice = parseFloat("{{ $product->price }}");
-  var productQuantity = parseFloat("{{ $product->unit->quantity }}");
+  var productPrice = parseFloat("{{ $price }}");
+  var productQuantity = parseFloat("{{ $quantity }}");
   var addOns = {};
   var variations = @json($variations);
+
   var currentProductVariation = getCurrentVariant();
   function getCurrentVariant() {
     var variants = [];
@@ -149,7 +173,6 @@ if ($currentVariant) {
         variants.push(radio.value);
       }
     });
-
     let selectedVariant = variations.filter((item) => {
       return item.type === variants.map(item => item.trim()).join('-');
     })[0];
@@ -218,7 +241,6 @@ if ($currentVariant) {
       val -= step;
     }
     el.value = val;
-    console.log(el)
     if (!addOns[name]) {
       addOns[name] = {
         price,
@@ -236,7 +258,7 @@ if ($currentVariant) {
     }
 
     addOns[name].quantity = val;
-
+    console.log(val)
     updateOrderPrice();
   }
 

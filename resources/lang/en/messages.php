@@ -1336,4 +1336,12 @@
   'Address updated!' => 'Address updated!',
   'cancel' => 'Cancel',
   'messages.No data to show' => 'Messages.No data to show',
+  'Notification status updated!' => 'Notification status updated!',
+  'deleted' => 'Deleted',
+  'messages.Are you sure to delete this' => 'Messages.Are you sure to delete this',
+  'restore' => 'Restore',
+  'Remove point' => 'Remove point',
+  'remove wallet points' => 'Remove wallet points',
+  'you can\'t remove points when credit is zero' => 'You can t remove points when credit is zero',
+  'remove' => 'Remove',
 );

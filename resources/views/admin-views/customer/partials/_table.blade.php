@@ -48,10 +48,29 @@
                     <a class="dropdown-item" href="javascript:" onclick="set_point_modal_data('{{route('admin.customer.set-point-modal-data',[$customer['id']])}}')">
                         <i class="tio-coin"></i> {{translate('Add Point')}}
                     </a>
+                    <a href="javascript:" class="dropdown-item" onclick="removeCustomerPoints('{{ route('admin.customer.remove-point-modal', $customer['id']) }}')">
+                      <i class="tio-eraser"></i> {{ translate('Remove point') }}
+                    </a>
                     <a href="" class="dropdown-item toggleStatusBtn" data-id="{{ $customer['id'] }}">
                         <i class="tio-user-switch"></i>
                         <span>{{ translate('status') }}</span>
                     </a>
+                    <div class="dropdown-divider"></div>
+                    <form action="" method="POST" class="text-center dropdown-item">
+                      @csrf
+                      @method('DELETE')
+                      @if ($customer->deleted_at)
+                      <button class="btn btn-sm btn-success" type="button" onclick="restoreCustomer(this,{{ $customer['id'] }})">
+                        <span class=" tio-restore"></span>
+                        <span>{{ translate('restore') }}</span>
+                      </button>
+                      @else
+                      <button class="btn btn-sm btn-danger" type="button" onclick="deleteCustomer(this,{{ $customer['id'] }})">
+                        <span class="tio-delete"></span>
+                        <span>{{ translate('delete') }}</span>
+                      </button>
+                      @endif
+                    </form>
 
                     {{--<a class="dropdown-item" target="" href="">
                         <i class="tio-download"></i> Suspend

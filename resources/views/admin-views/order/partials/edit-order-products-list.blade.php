@@ -52,27 +52,10 @@
 </div>
 
 
-{{-- Modal --}}
-<div class="modal fade" id="view_product_details">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-    </div>
-  </div>
-</div>
-{{-- end Modal --}}
+
 @push('script')
 <script>
-  function showProductCartModal(id) {
-      window.event.preventDefault();
-      fetch(`{{ url('admin/orders') }}/product/show/${id}?order_id={{ $order->id }}`)
-      .then((res) => {
-        return res.text();
-      }).then((res) => {
-        $('#view_product_details .modal-content').html(res);
-        $('#view_product_details').modal('show');
-      })
 
-    }
 
     document.getElementById('category').addEventListener('change', function () {
       var form = document.getElementById('products_search_form');

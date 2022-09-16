@@ -135,6 +135,9 @@
 <script src="{{asset('public/assets/admin')}}/js/theme.min.js"></script>
 <script src="{{asset('public/assets/admin')}}/js/sweet_alert.js"></script>
 <script src="{{asset('public/assets/admin')}}/js/toastr.js"></script>
+{{-- <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+<script src="{{ asset('firebase-messaging-sw.js') }}"></script> --}}
 {!! Toastr::message() !!}
 
 @if ($errors->any())
@@ -304,6 +307,7 @@
     }
 
     function route_alert(route, message) {
+        console.log('called');
         Swal.fire({
             title: '{{translate("Are you sure?")}}',
             text: message,

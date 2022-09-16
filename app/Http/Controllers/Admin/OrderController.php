@@ -344,6 +344,9 @@ class OrderController extends Controller
         ->where('translationable_type', Product::class)
         ->where('value', 'LIKE', "%$search%");
       });
+    })->whereNotIn('id', function($query) use ($id) {
+      $query->from('order_details')->select('product_id')
+      ->where('order_id', $id);
     })
     ->paginate(4);
 
@@ -379,12 +382,31 @@ class OrderController extends Controller
     $product = Product::findOrFail($id);
     $addOns = AddOn::whereIn('id', json_decode($product->add_ons))->get();
     $attributes = json_decode($product->choice_options);
+    $detail = OrderDetail::where([
+      'product_id' => $id,
+      'order_id' => request('order_id')
+    ])->first();
+    $addOnPrice = $this->calculateAddOnPrice($detail);
+    if ($detail) {
+      $orderAddOn = json_decode($detail->add_on_ids);
+      $orderAddOnQty = json_decode($detail->add_on_qtys);
+      foreach($orderAddOn as $key => $id) {
+          foreach($addOns as $addon) {
+          if ($addon->id == $id) {
+            $addon->quantity = $orderAddOnQty[$key];
+          }
+        }
+      }
+    }
+
     return view('admin-views.order.partials._view-order-cart')->with([
       'product' => $product,
       'attributes' => $attributes,
       'addOns' => $addOns,
       'order_id' => $order_id,
-      'variations' => json_decode($product->variations)
+      'variations' => json_decode($product->variations),
+      'detail' => $detail,
+      'addOnPrice' => $addOnPrice
     ]);
   }
 
@@ -425,7 +447,7 @@ class OrderController extends Controller
 
     $detail->product_id = $product->id;
     $detail->order_id = $request->order_id;
-    $detail->price = $price * $request->quantity;
+    $detail->price = $price;
     $detail->product_details = json_encode($product);
     $detail->variation = json_encode($currentVariation);
     $detail->discount_on_product = Helpers::discount_calculate($product, $price);
@@ -462,20 +484,41 @@ class OrderController extends Controller
    * @param int $id [order id]
    * @return void
    */
-  public function calculateOrderTotalAmount($id)
+  private function calculateOrderTotalAmount($id)
   {
     $order = Order::with('details')->where('id', $id)->first();
     $details = $order->details;
     $total = 0;
     $totalTax = 0;
     foreach($details as $detail) {
+
       $total += ($detail->price - $detail->discount_on_product) * $detail->quantity;
       $total += ($detail->tax_amount * $detail->quantity);
       $totalTax += $detail->tax_amount * $detail->quantity;
+      $total += $this->calculateAddOnPrice($detail);
     }
     $total -= ($order->coupon_discount_amount+$order->extra_discount);
     $total += $order->delivery_charge;
     $order->order_amount = $total;
     $order->save();
+  }
+
+  private function calculateAddOnPrice($detail) {
+    if(!$detail) {
+      return 0;
+    }
+    $addOnIds = json_decode($detail->add_on_ids);
+    $addOnQty = json_decode($detail->add_on_qtys);
+    $addOnItems = AddOn::whereIn('id', $addOnIds)->get();
+    $total = 0;
+    foreach($addOnIds as $key => $id) {
+      foreach($addOnItems as $item) {
+        if ($item->id === $id) {
+          $total += $item->price * $addOnQty[$key];
+        }
+      }
+    }
+
+    return $total;
   }
 }

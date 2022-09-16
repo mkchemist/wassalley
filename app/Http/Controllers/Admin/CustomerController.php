@@ -37,6 +37,30 @@ class CustomerController extends Controller
         }
     }
 
+    public function removePoints(Request $request, $id)
+    {
+      $user = User::findOrFail($id);
+
+      if ($user->point === 0 || $user->point < $request->points) {
+        return;
+      }
+
+      $user->point = $user->point - $request->points;
+      $user->save();
+      DB::table('point_transitions')->insert([
+        'user_id' => $id,
+        'description' => 'admin remove this point',
+        'type' => 'point_out',
+        'amount' => $request->points,
+        'created_at' => now(),
+        'updated_at' => now(),
+      ]);
+
+      Toastr::success('Customer points updated');
+
+      return back();
+    }
+
     public function set_point_modal_data($id)
     {
         $customer = User::find($id);
@@ -45,10 +69,21 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function removePointModal($id)
+    {
+      $customer = User::find($id);
+      return response()->json([
+        'view' => view('admin-views.customer.partials._remove-point-modal')->with([
+          'customer' => $customer
+        ])->render()
+      ]);
+    }
+
     public function customer_list(Request $request)
     {
         $query_param = [];
         $search = $request['search'];
+        $customerState = $request['customer_state'] ?? 'active';
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
             $customers = User::where(function ($q) use ($key) {
@@ -64,7 +99,20 @@ class CustomerController extends Controller
             $customers = new User();
         }
 
-        $customers = $customers->with(['orders'])->latest()->paginate(Helpers::getPagination())->appends($query_param);
+        $customers = $customers->with(['orders'])->latest();
+
+        switch($customerState) {
+          case 'all' :
+            $customers = $customers->withTrashed();
+            break;
+          case 'inactive':
+            $customers = $customers->onlyTrashed();
+            break;
+          default:
+          break;
+        }
+
+        $customers = $customers->paginate(Helpers::getPagination())->appends($query_param);
         /**
          * Append total payment value to each customer
          */
@@ -308,13 +356,28 @@ class CustomerController extends Controller
     public function destroy(int $id)
     {
 
+
         $user = User::findOrFail($id);
 
         $user->delete();
-
-        return back()->with('success', 'Customer deleted');
+        Toastr::success('Customer deleted');
+        return back();
 
     }
+
+
+    public function restore(int $id)
+    {
+      $user = User::onlyTrashed()->findOrFail($id);
+
+      $user->restore();
+
+      Toastr::success('Customer restored');
+
+      return back();
+
+    }
+
 
     /**
      * Toggle selected customer state active or not active

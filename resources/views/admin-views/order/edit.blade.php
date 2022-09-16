@@ -43,8 +43,8 @@ $totalOrderTax = 0;
               @php
               $product = json_decode($detail->product_details);
               $variations = $detail->variation ? json_decode($detail->variation) : [];
-              $actualProductPrice = count($variations) ? $variations[0]->price : $product->price;
-              $totalOrderProductPrice = ($actualProductPrice-$detail->discount_on_product) * $detail->quantity;
+              $actualProductPrice = (count($variations) ? $variations[0]->price : $product->price) - $detail->discount_on_product;
+              $totalOrderProductPrice = ($actualProductPrice) * $detail->quantity;
               $totalOrderItemsPrice += $totalOrderProductPrice;
               $addOnIds = json_decode($detail->add_on_ids);
               $addOns = count($addOnIds) ? \App\Model\AddOn::whereIn('id', $addOnIds)->get() : [];
@@ -56,9 +56,11 @@ $totalOrderTax = 0;
                 <tr>
                   <td>
                     <div class="my-2">
+                      <a href="#" onclick="showProductCartModal({{ $detail->product_id }})">
 
-                      <img src="{{ asset('storage/app/public/product/'.$product->image) }}" alt=""
-                      class="img-fluid rounded" width="75">
+                        <img src="{{ asset('storage/app/public/product/'.$product->image) }}" alt=""
+                          class="img-fluid rounded" width="75">
+                      </a>
                     </div>
                     <form action="{{ route('admin.orders.product.delete', $detail->id) }}" method="POST">
                       @csrf
@@ -382,12 +384,21 @@ $totalOrderTax = 0;
   </div>
 </div>
 <!-- End Modal -->
+
+{{-- Modal --}}
+<div class="modal fade" id="view_product_details">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+{{-- end Modal --}}
 @endsection
 
 
 @push('script')
 <script>
-    [].slice.call(document.querySelectorAll('.delete-btn')).forEach((btn) => {
+  [].slice.call(document.querySelectorAll('.delete-btn')).forEach((btn) => {
       btn.addEventListener('click', function (event) {
         Swal.fire({
           title: 'Warning',
@@ -403,6 +414,19 @@ $totalOrderTax = 0;
         });
       })
     });
-  </script>
+
+
+    function showProductCartModal(id) {
+      window.event.preventDefault();
+      fetch(`{{ url('admin/orders') }}/product/show/${id}?order_id={{ $order->id }}`)
+      .then((res) => {
+        return res.text();
+      }).then((res) => {
+        $('#view_product_details .modal-content').html(res);
+        $('#view_product_details').modal('show');
+      })
+
+    }
+</script>
 
 @endpush

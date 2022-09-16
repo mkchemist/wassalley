@@ -154,29 +154,21 @@
               </button>
               <div class="dropdown-menu text-capitalize dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'pending'])}}','{{\App\CentralLogics\translate("
-                  Change status to pending ?")}}')" href="javascript:">{{translate('pending')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'pending'])}}','{{\App\CentralLogics\translate("Change status to pending ?")}}')" href="javascript:">{{translate('pending')}}</a>
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'confirmed'])}}','{{\App\CentralLogics\translate("
-                  Change status to confirmed ?")}}')" href="javascript:">{{translate('confirmed')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'confirmed'])}}','{{\App\CentralLogics\translate("Change status to confirmed ?")}}')" href="javascript:">{{translate('confirmed')}}</a>
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'processing'])}}','{{\App\CentralLogics\translate("
-                  Change status to processing ?")}}')" href="javascript:">{{translate('processing')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'processing'])}}','{{\App\CentralLogics\translate("Change status to processing ?")}}')" href="javascript:">{{translate('processing')}}</a>
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'out_for_delivery'])}}','{{\App\CentralLogics\translate("
-                  Change status to out for delivery ?")}}')" href="javascript:">{{translate('out_for_delivery')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'out_for_delivery'])}}','{{\App\CentralLogics\translate("Change status to out for delivery ?")}}')" href="javascript:">{{translate('out_for_delivery')}}</a>
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'delivered'])}}','{{\App\CentralLogics\translate("
-                  Change status to delivered ?")}}')" href="javascript:">{{translate('delivered')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'delivered'])}}','{{\App\CentralLogics\translate("Change status to delivered ?")}}')" href="javascript:">{{translate('delivered')}}</a>
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'returned'])}}','{{\App\CentralLogics\translate("
-                  Change status to returned ?")}}')" href="javascript:">{{translate('returned')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'returned'])}}','{{\App\CentralLogics\translate("Change status to returned ?")}}')" href="javascript:">{{translate('returned')}}</a>
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'failed'])}}','{{\App\CentralLogics\translate("
-                  Change status to failed ?")}}')" href="javascript:">{{translate('failed')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'failed'])}}','{{\App\CentralLogics\translate("Change status to failed ?")}}')" href="javascript:">{{translate('failed')}}</a>
                 <a class="dropdown-item"
-                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'canceled'])}}','{{\App\CentralLogics\translate("
-                  Change status to canceled ?")}}')" href="javascript:">{{translate('canceled')}}</a>
+                  onclick="route_alert('{{route('admin.orders.status',['id'=>$order['id'],'order_status'=>'canceled'])}}','{{\App\CentralLogics\translate("Change status to canceled ?")}}')" href="javascript:">{{translate('canceled')}}</a>
               </div>
             </div>
             @endif

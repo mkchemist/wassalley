@@ -342,13 +342,17 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
         Route::group(['prefix' => 'customer', 'as' => 'customer.','middleware'=>['actch', 'module:customer_management']], function () {
             Route::post('add-point/{id}', 'CustomerController@add_point')->name('add-point');
             Route::get('set-point-modal-data/{id}', 'CustomerController@set_point_modal_data')->name('set-point-modal-data');
+            Route::get('remove-point-modal/{id}','CustomerController@removePointModal')->name('remove-point-modal');
             Route::get('list', 'CustomerController@customer_list')->name('list');
             Route::get('view/{user_id}', 'CustomerController@view')->name('view');
             Route::get('edit/{id}', 'CustomerController@edit')->name('edit');
             Route::put('/{id}', 'CustomerController@update')->name('update');
             Route::post('/update-state/{id}', 'CustomerController@toggleState')->name('toggle-state');
+            Route::delete('/delete/{id}', 'CustomerController@destroy');
+            Route::delete('/restore/{id}', 'CustomerController@restore');
             Route::post('search', 'CustomerController@search')->name('search');
             Route::post('AddPoint/{id}', 'CustomerController@AddPoint')->name('AddPoint');
+            Route::post('remove-point/{id}', 'CustomerController@removePoints')->name('remove-points');
             Route::get('transaction', 'CustomerController@transaction')->name('transaction');
             Route::get('transaction/{id}', 'CustomerController@customer_transaction')->name('customer_transaction');
             Route::get('subscribed-emails', 'CustomerController@subscribed_emails')->name('subscribed_emails');
