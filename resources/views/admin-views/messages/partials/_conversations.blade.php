@@ -92,6 +92,9 @@
         <!-- Footer -->
         <div class="card-footer p-md-4 p-2">
             <div id="accordion" class="d-flex justify-content-end">
+              <button type="button" class="btn btn-info mr-2" onclick="viewConvs('{{route('admin.message.view',[$user->id])}}','customer-{{$user->id}}')">
+                <i class="tio-refresh"></i> {{ translate('refresh') }}
+              </button>
                 <button class="btn btn-primary mr-2 collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     {{translate('Upload')}} <i class="tio-upload"></i>
                 </button>

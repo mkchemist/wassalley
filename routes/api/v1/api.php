@@ -114,6 +114,8 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>'localization'], function (
             Route::post('send/{sender_type}', 'ConversationController@store_message_by_order');
         });
 
+        Route::apiResource('chat', 'ChatController');
+
         Route::group(['prefix' => 'wish-list'], function () {
             Route::get('/', 'WishlistController@wish_list');
             Route::post('add', 'WishlistController@add_to_wishlist');

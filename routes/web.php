@@ -178,3 +178,13 @@ Route::get('/after-install-scaffold', function () {
         'value' => 'wassalley'
     ]);
 });
+
+/*
+Route::get('/fcm-broadcast', function () {
+  $message = new \App\Services\Notification\NotificationMessage('New Message', 'New chat message');
+
+  $status = \App\Services\Notification\NotificationService::toDevice('dNM8lnwZTdmN8-dOWxiSFR:APA91bHuridsJ2MwPqGB8gVm93F5_svWBw9ng840C44W6t8NlI0cuDkueLGc8BrMNiHb50dZGDwBp7N3qvK8CgQFYBSs2OeaSHA0bwhiVQJmt2o3ty7MlVSbkZQXszpFN6DXxSVNUWq2', $message);
+
+
+});
+ */

@@ -114,12 +114,13 @@ class ConversationController extends Controller
 
     public function store_message_by_order(Request $request, $sender_type)
     {
+
         $validator = Validator::make($request->all(), [
             'order_id' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::error_processor($validator)], 422);
         }
 
         $sender_id = null;

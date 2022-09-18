@@ -1,4 +1,13 @@
+@php
+$order = session('order_carts');
+$totalOrderItemsPrice = 0;
+$totalOrderAddOnsPrice = 0;
+$totalOrderTax = 0;
+@endphp
 @extends('layouts.admin.app')
+
+@section('title', "Edit Order #{$order->id}")
+
 
 @push('css_or_js')
 <style>
@@ -9,17 +18,11 @@
 @endpush
 
 @section('content')
-@php
-$order = session('order_carts');
-$totalOrderItemsPrice = 0;
-$totalOrderAddOnsPrice = 0;
-$totalOrderTax = 0;
-@endphp
 <div class="content container-fluid">
   <div class="page-header d-print-none">
     <div class="">
       <h2><span class="tio-edit"></span> Edit Order #{{ $order->id }}</h2>
-      <a href="{{ url()->previous() }}" class="btn btn-dark">Back</a>
+      <a href="{{ route('admin.orders.details', $order->id)  }}" class="btn btn-dark"><i class="tio-arrow-backward"></i> {{ translate('back') }}</a>
     </div>
   </div>
   <main class="mt-5">
@@ -189,8 +192,7 @@ $totalOrderTax = 0;
             </table>
             <hr>
             <div class="text-right">
-              <button class="btn btn-primary">{{ translate('save') }}</button>
-              <button class="btn btn-dark">{{ translate('cancel') }}</button>
+              <a href="{{ route('admin.orders.details', $order->id) }}" class="btn btn-dark"><i class="tio-arrow-backward"></i> {{ translate('cancel') }}</a>
             </div>
           </div>
         </div>

@@ -6,6 +6,8 @@ use App\CentralLogics\Helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Admin;
 use App\Model\Conversation;
+use App\Services\Notification\NotificationMessage;
+use App\Services\Notification\NotificationService;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -72,7 +74,12 @@ class ConversationController extends Controller
             'type'=>'order_status',
         ];
         try {
-            Helpers::send_push_notif_to_device($fcm_token, $data);
+            //Helpers::send_push_notif_to_device($fcm_token, $data);
+            $notification = new NotificationMessage('New message', Str::limit($request->reply, 500),'',[
+              'is_chat'=> true,
+              'user_id' => $user->id
+            ]);
+            NotificationService::toDevice($fcm_token, $notification);
         } catch (\Exception $exception) {
             //
         }

@@ -1344,4 +1344,6 @@
   'remove wallet points' => 'Remove wallet points',
   'you can\'t remove points when credit is zero' => 'You can t remove points when credit is zero',
   'remove' => 'Remove',
+  'FCM token updated successfully.' => 'FCM token updated successfully.',
+  'refresh' => 'Refresh',
 );
