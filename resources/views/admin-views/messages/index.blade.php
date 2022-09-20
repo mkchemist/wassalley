@@ -49,8 +49,22 @@
                     <!-- Body -->
                     <div class="card-body p-md-4 p-2" style="overflow-y: scroll;height: 600px"
                          id="conversation_sidebar">
-                        <div class="border-bottom"></div>
-                        @php($array=[])
+                         <div class="mb-2">
+                          <p class="mb-0">Total found: <span class="badge badge-info" id="users_count"></span></p>
+                         </div>
+                         <div class="form-inline">
+                          <input type="search" name="search_users" id="search_users" class="form-control col" placeholder="{{ translate('search') }}">
+                          <button class="btn btn-info mx-1">
+                            <span class="tio-search"></span>
+                          </button>
+                         </div>
+                         <hr>
+                        <div id="users-list"></div>
+                        <div class="text-center mt-5">
+                          <button type="button" class="btn btn-info" id="users_list_prev_btn" disabled onclick="paginateUserList(this)"><i class=" tio-arrow-large-backward"></i></button>
+                          <button type="button" class="btn btn-info" id="users_list_next_btn" disabled onclick="paginateUserList(this)"><i class=" tio-arrow-large-forward"></i></button>
+                        </div>
+                       {{--  @php($array=[])
                         @foreach($conversations as $conv)
                             @if(in_array($conv->user_id,$array)==false)
                                 @php(array_push($array,$conv->user_id))
@@ -76,7 +90,7 @@
                                 </div>
                                 @endif
                             @endif
-                        @endforeach
+                        @endforeach --}}
                     </div>
                     <!-- End Body -->
                 </div>
@@ -205,17 +219,10 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
     <script>
-        @php($config=\App\CentralLogics\Helpers::get_business_settings('firebase_message_config'))
-        firebase.initializeApp({
-            apiKey: "{{ $config['apiKey'] ?? '' }}",
-            authDomain: "{{ $config['authDomain'] ?? '' }}",
-            projectId: "{{ $config['projectId'] ?? '' }}",
-            storageBucket: "{{ $config['storageBucket'] ?? '' }}",
-            messagingSenderId: "{{ $config['messagingSenderId'] ?? '' }}",
-            appId: "{{ $config['appId'] ?? '' }}"
-        });
 
-        const messaging = firebase.messaging();
+
+
+    /*     const messaging = firebase.messaging();
 
         //service worker registration
         if ('serviceWorker' in navigator) {
@@ -257,7 +264,7 @@
                 toastr.info(payload.notification.title ? payload.notification.title : 'New message arrived.');
             }
 
-        });
+        }); */
 
         //Background State
         // messaging.setBackgroundMessageHandler(function (payload) {
@@ -267,7 +274,7 @@
         //     });
         // });
 
-        function update_fcm_token(token) {
+        /* function update_fcm_token(token) {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -289,7 +296,91 @@
                     toastr.error('{{\App\CentralLogics\translate("FCM token updated failed")}}');
                 }
             });
+        } */
+
+        var currentUsersListUrl = `{{ route("admin.message.customers") }}`;
+        var usersSearch;
+        var usersSearchTimer;
+
+        function getUsersList(url = null, params = {}) {
+          $('#users-list').html(`<div class="d-flex justify-content-center align-items-center" style="height:300px">
+            <div class="spinner-border text-info"></div>
+          </div>`)
+
+          url = new URL(url || currentUsersListUrl);
+          if (Object.keys(params).length) {
+            Object.keys(params).forEach((key) => {
+              url.searchParams.append(key, params[key]);
+            })
+          }
+
+
+          fetch(url, {
+            headers: {
+              Accept: 'application/json',
+            }
+          })
+          .then((res) => res.json())
+          .then((res) => {
+            $('#users-list').html(res.view)
+            $('#users_list_next_btn').attr('data-url', res.next_page_url);
+            $('#users_list_prev_btn').attr('data-url', res.prev_page_url);
+            $('#users_count').html(res.total)
+            if (res.next_page_url) {
+              $('#users_list_next_btn').attr('disabled',false);
+            } else {
+              $('#users_list_next_btn').attr('disabled',true);
+
+            }
+
+            if (res.prev_page_url) {
+              $('#users_list_prev_btn').attr('disabled', false);
+            } else {
+              $('#users_list_prev_btn').attr('disabled', true);
+            }
+          }).catch(err => {
+            console.log(err);
+          })
         }
+
+        function paginateUserList(target) {
+          var url = target.dataset.url;
+          if (url) {
+            currentUsersListUrl = url;
+            getUsersList(url);
+            console.log(currentUsersListUrl);
+          }
+        };
+
+        $('#search_users').on('keyup', function (event) {
+          usersSearch = $(this).val();
+
+          if (!usersSearch || usersSearch === '') {
+            return;
+          }
+
+          if (usersSearchTimer) {
+            clearTimeout(usersSearchTimer);
+          }
+
+          usersSearchTimer = setTimeout(function () {
+            getUsersList(currentUsersListUrl, {
+              search: usersSearch
+            })
+          }, 500);
+
+        }).on('change', function () {
+          var val = $(this).val();
+          if (val === '') {
+            getUsersList(currentUsersListUrl);
+          }
+        })
+
+
+
+        window.addEventListener('load', function () {
+          getUsersList();
+        })
 
     </script>
 

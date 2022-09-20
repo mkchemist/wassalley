@@ -19,6 +19,7 @@ class Conversation extends Model
       'reply',
       'checked',
       'image',
-      'is_reply'
+      'is_reply',
+      'seen'
     ];
 }

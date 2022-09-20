@@ -115,4 +115,27 @@ class ConversationController extends Controller
         $config = Helpers::get_business_settings('firebase_message_config');
         return $config;
     }
+
+
+    public function customersList(Request $request)
+    {
+      $search = $request->search;
+      $users = User::withCount([
+        'conversations' => function($query) {
+          $query->where('checked', false);
+        }
+      ])
+      ->when($search, function($query) use($search) {
+        $query->where('f_name', 'LIKE', "%$search%")
+        ->orWhere('l_name', 'LIKE', "%$search%");
+      })
+      ->paginate(1);
+
+      return response()->json([
+        'view' => view('admin-views.messages.partials._users-list', compact('users'))->render(),
+        'prev_page_url'   =>  $users->previousPageUrl(),
+        'next_page_url'   =>  $users->nextPageUrl(),
+        'total' => $users->total()
+      ]);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Model\Conversation;
 use App\Model\CustomerAddress;
 use App\Model\Order;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -70,5 +71,10 @@ class User extends Authenticatable
     public function scopeInactive($query)
     {
         return $query->where('active', false);
+    }
+
+    public function conversations()
+    {
+      return $this->hasMany(Conversation::class, 'user_id');
     }
 }

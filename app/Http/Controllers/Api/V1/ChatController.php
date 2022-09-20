@@ -29,7 +29,12 @@ class ChatController extends Controller
      */
     public function index()
     {
-      $chat = Conversation::where('user_id', $this->user->id)->get();
+      $counter = request('counter');
+      $chat = Conversation::where('user_id', $this->user->id)
+      ->when($counter, function ($query) {
+        $query->where('seen', false);
+      })
+      ->get();
 
       return $chat;
     }
@@ -73,7 +78,7 @@ class ChatController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
 
     /**
@@ -85,5 +90,17 @@ class ChatController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function markAllAsSeen(Request $request)
+    {
+      Conversation::where('user_id', $this->user->id)
+        ->update([
+          'seen' => true
+        ]);
+
+        return response()->json([
+          'message' => 'all messages marked as seen'
+        ]);
     }
 }
