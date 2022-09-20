@@ -113,7 +113,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>'localization'], function (
             Route::get('get-order-message', 'ConversationController@get_message_by_order');
             Route::post('send/{sender_type}', 'ConversationController@store_message_by_order');
         });
-
+        Route::post('mark-chat-as-seen', 'ChatController@markAllAsSeen');
         Route::apiResource('chat', 'ChatController');
 
         Route::group(['prefix' => 'wish-list'], function () {

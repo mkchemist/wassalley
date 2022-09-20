@@ -178,6 +178,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('get-conversations', 'ConversationController@get_conversations')->name('get_conversations');
             Route::post('store/{user_id}', 'ConversationController@store')->name('store');
             Route::get('view/{user_id}', 'ConversationController@view')->name('view');
+            Route::get('customers', 'ConversationController@customersList')->name('customers');
         });
 
         Route::group(['prefix' => 'reviews', 'as' => 'reviews.','middleware'=>['module:deliveryman_management']], function () {
