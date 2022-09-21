@@ -9,6 +9,9 @@ use App\Model\Category;
 use App\Model\Order;
 use App\Model\OrderDetail;
 use App\Model\Product;
+use App\Services\Notification\NotificationMessage;
+use App\Services\Notification\NotificationService;
+use App\User;
 use Brian2694\Toastr\Facades\Toastr;
 use DateTime;
 use Illuminate\Http\Request;
@@ -503,6 +506,10 @@ class OrderController extends Controller
     $order->save();
   }
 
+  /**
+   * Calculate Order Add ons price
+   *
+   */
   private function calculateAddOnPrice($detail) {
     if(!$detail) {
       return 0;
@@ -521,4 +528,39 @@ class OrderController extends Controller
 
     return $total;
   }
+
+  /**
+   * Send Order Edit notification for Order owner
+   *
+   * @param \Illuminate\Http\Request $request
+   * @return \Illuminate\Http\Response
+   */
+  public function sendOrderEditNotification(Request $request)
+  {
+    $request->validate([
+      'order_id' => 'required|exists:orders,id',
+      'customer_id' => 'required|exists:users,id'
+    ]);
+
+    $user = User::where('id', $request->customer_id)->firstOrFail();
+
+    $notification = new NotificationMessage(
+      "تعديل طلب {$request->order_id}",
+      "تم تعديل طلب {$request->order_id}",
+      "",
+      [
+        "order_id" => $request->order_id
+      ]
+    );
+
+    NotificationService::toDevice($user->cm_firebase_token,$notification);
+    Toastr::success('Notification sent');
+    return back();
+  }
+
+
+  /* public function deleteOrder(int $id)
+  {
+
+  } */
 }

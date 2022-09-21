@@ -1346,4 +1346,6 @@
   'remove' => 'Remove',
   'FCM token updated successfully.' => 'FCM token updated successfully.',
   'refresh' => 'Refresh',
+  'send order edit notification' => 'Send order edit notfication',
+  'Banner added successfully!' => 'Banner added successfully!',
 );

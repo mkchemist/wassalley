@@ -156,6 +156,8 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('product/show/{id}', 'OrderController@viewProduct')->name('view-product');
             Route::post('product/add', 'OrderController@addOrderProduct')->name('product.add');
             Route::delete('product/delete/{id}', 'OrderController@deleteOrderDetail')->name('product.delete');
+            Route::post('send-update-notification', 'OrderController@sendOrderEditNotification')->name('send-order-edit-notification');
+            /* Route::delete('delete/{id}', 'OrderController@deleteOrder')->name('delete-order'); */
         });
 
         Route::group(['prefix' => 'category', 'as' => 'category.','middleware'=>['module:product_management']], function () {

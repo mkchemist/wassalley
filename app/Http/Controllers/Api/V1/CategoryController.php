@@ -46,4 +46,11 @@ class CategoryController extends Controller
             return response()->json([], 200);
         }
     }
+
+    public function show($id)
+    {
+      $category =  Category::where('id', $id)->firstOrFail();
+
+      return $category;
+    }
 }

@@ -139,6 +139,7 @@
                                         @else
                                             @php($add_on_qty=$add_on_qtys[$key2])
                                         @endif
+                                        @if ($add_on_qty)
 
                                         <div class="font-size-sm text-body">
                                             <span>{{$addon['name']}} :  </span>
@@ -146,6 +147,7 @@
                                                             {{$add_on_qty}} x {{ \App\CentralLogics\Helpers::set_symbol($addon['price']) }}
                                                         </span>
                                         </div>
+                                        @endif
                                         @php($add_ons_cost+=$addon['price']*$add_on_qty)
                                     @endforeach
 

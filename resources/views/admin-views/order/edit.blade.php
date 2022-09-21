@@ -22,7 +22,19 @@ $totalOrderTax = 0;
   <div class="page-header d-print-none">
     <div class="">
       <h2><span class="tio-edit"></span> Edit Order #{{ $order->id }}</h2>
-      <a href="{{ route('admin.orders.details', $order->id)  }}" class="btn btn-dark"><i class="tio-arrow-backward"></i> {{ translate('back') }}</a>
+      <div class="d-flex">
+
+        <a href="{{ route('admin.orders.details', $order->id)  }}" class="btn btn-dark"><i class="tio-arrow-backward"></i> {{ translate('back') }}</a>
+        <form action="{{ route('admin.orders.send-order-edit-notification') }}" method="POST" class="mx-2" id="notify_form">
+          @csrf
+          <input type="hidden" name="order_id" value="{{ $order->id }}">
+          <input type="hidden" name="customer_id" value="{{ $order->customer->id }}">
+          <button class="btn btn-danger" type="button" id="notify_btn">
+            <i class="tio-notifications"></i>
+            {{ translate('send order edit notification') }}
+          </button>
+        </form>
+      </div>
     </div>
   </div>
   <main class="mt-5">
@@ -427,8 +439,22 @@ $totalOrderTax = 0;
         $('#view_product_details .modal-content').html(res);
         $('#view_product_details').modal('show');
       })
-
     }
+
+    document.querySelector('#notify_btn').addEventListener('click',function() {
+      Swal.fire({
+        title: '{{ translate("Are you sure?") }} ?',
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonText: '{{ translate("yes") }}',
+        cancelButtonText: "{{ translate('no') }}"
+      }).then(function(response) {
+        if (response.value) {
+          document.querySelector('#notify_form').submit();
+        }
+      })
+    });
+
 </script>
 
 @endpush

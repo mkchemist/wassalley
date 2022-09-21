@@ -61,6 +61,10 @@
                     <a class="dropdown-item" target="_blank"
                        href="{{route('admin.orders.generate-invoice',[$order['id']])}}"><i
                             class="tio-download"></i> {{translate('invoice')}}</a>
+                    <a href="" class="dropdown-item">
+                      <i class="tio-remove"></i>
+                      {{ translate('delete') }}
+                    </a>
                 </div>
             </div>
         </td>

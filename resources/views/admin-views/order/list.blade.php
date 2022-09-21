@@ -188,6 +188,14 @@
                                         <a class="dropdown-item" target="_blank"
                                            href="{{route('admin.orders.generate-invoice',[$order['id']])}}"><i
                                                 class="tio-download"></i> {{translate('invoice')}}</a>
+                                        {{-- <form action="{{ route('admin.orders.delete-order', $order->id) }}" method="POST" class="dropdown-item p-0">
+                                          @csrf
+                                          @method('DELETE')
+                                          <a href="" class="dropdown-item" onclick="deleteOrder(this)">
+                                            <i class="tio-delete"></i>
+                                            {{ translate('delete') }}
+                                          </a>
+                                        </form> --}}
                                     </div>
                                 </div>
                             </td>
@@ -250,5 +258,23 @@
                 },
             });
         });
+
+
+        function deleteOrder(target) {
+          window.event.preventDefault();
+          Swal.fire({
+            title: "{{ translate('Are you sure?') }}",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonText: '{{ translate("Yes") }}',
+            cancelButtonText: '{{ translate("No") }}',
+            reverseButtons: true
+          }).then((response) => {
+            if (response.value) {
+              var form = target.parentElement;
+              form.submit();
+            }
+          })
+        }
     </script>
 @endpush

@@ -105,7 +105,7 @@ $quantity = $detail->quantity;
             onclick="updateProductQuantity('quantity', 'dec')">-</button>
           <input type="number" min="{{ $product->unit->quantity }}" name="quantity" id="quantity"
             value="{{ $quantity }}" class="form-control form-control-sm col-6 mx-1"
-            step="{{ $product->unit->quantity }}" readonly>
+            step="{{ $product->unit->quantity }}" >
           <button class="btn btn-sm btn-light border" type="button"
             onclick="updateProductQuantity('quantity', 'inc')">+</button>
         </div>
