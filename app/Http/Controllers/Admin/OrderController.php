@@ -347,10 +347,10 @@ class OrderController extends Controller
         ->where('translationable_type', Product::class)
         ->where('value', 'LIKE', "%$search%");
       });
-    })->whereNotIn('id', function($query) use ($id) {
+    })/* ->whereNotIn('id', function($query) use ($id) {
       $query->from('order_details')->select('product_id')
       ->where('order_id', $id);
-    })
+    }) */
     ->paginate(4);
 
     $order = Order::with(['details', 'customer'])->findOrFail($id);

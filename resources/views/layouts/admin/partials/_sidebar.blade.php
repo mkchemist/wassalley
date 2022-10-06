@@ -383,6 +383,8 @@
                                 </a>
                             </li>
 
+
+
                             <!-- MESSAGE -->
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/message*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link" href="{{route('admin.message.list')}}">

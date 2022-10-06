@@ -93,4 +93,14 @@ class BranchController extends Controller
         Toastr::success(translate('Branch removed!'));
         return back();
     }
+
+
+    public function categories()
+    {
+      $branches = Branch::all();
+
+      return view("admin-views.branch.branch-category")->with([
+        'branches' => $branches
+      ]);
+    }
 }

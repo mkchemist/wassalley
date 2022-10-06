@@ -1348,4 +1348,7 @@
   'refresh' => 'Refresh',
   'send order edit notification' => 'Send order edit notfication',
   'Banner added successfully!' => 'Banner added successfully!',
+  'branch Categories' => 'Branch Categories',
+  'you_must_select_branch' => 'You must select branch',
+  'messages.you_must_select_branch' => 'Messages.you must select branch',
 );

@@ -175,6 +175,9 @@
                                                     <i class="tio-settings"></i>
                                                 </button>
                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a href="{{ route('admin.branch.categories') }}" class="dropdown-item">
+                                                      {{ translate("categories") }}
+                                                    </a>
                                                     <a class="dropdown-item"
                                                        href="{{route('admin.branch.edit',[$branch['id']])}}">{{translate('edit')}}</a>
                                                     @if($branch['id']!=1)
@@ -185,6 +188,7 @@
                                                             @csrf @method('delete')
                                                         </form>
                                                     @endif
+
                                                 </div>
                                             </div>
                                             <!-- End Dropdown -->

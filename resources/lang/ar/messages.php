@@ -1265,6 +1265,7 @@
   'l_name' => 'الاسم الاخير',
   'messages.Password' => 'Messages.Password',
   'messages.confirmation' => 'Messages.confirmation',
-  'send order edit notification' => 'إرسال اشعار تعديل'
+  'send order edit notification' => 'إرسال اشعار تعديل',
+  "you_must_select_branch" => "يجب تحديد فرع اولا",
 
 );

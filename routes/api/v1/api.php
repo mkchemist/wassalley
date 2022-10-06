@@ -122,6 +122,11 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>'localization'], function (
             Route::post('add', 'WishlistController@add_to_wishlist');
             Route::delete('remove', 'WishlistController@remove_from_wishlist');
         });
+
+        Route::group(['prefix' => 'branches'], function () {
+          Route::get('/', 'BranchController@index');
+          Route::get('/show/{id}', 'BranchController@show');
+        });
     });
 
     Route::group(['prefix' => 'banners'], function () {

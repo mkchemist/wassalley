@@ -83,6 +83,15 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.'], function () {
             Route::get('edit/{id}', 'BranchController@edit')->name('edit');
             Route::post('update/{id}', 'BranchController@update')->name('update');
             Route::delete('delete/{id}', 'BranchController@delete')->name('delete');
+            Route::get('categories', 'BranchController@categories')->name('categories');
+        });
+
+        Route::group(['prefix' => 'branch-categories', 'as' => 'branch-categories.', 'middleware' => ['module:business_management']], function () {
+
+          Route::get('show', 'Api\BranchCategoryController@show')->name('show');
+
+          Route::put('update', 'Api\BranchCategoryController@update')->name('update');
+
         });
 
         Route::group(['prefix' => 'addon', 'as' => 'addon.','middleware'=>['module:product_management']], function () {
