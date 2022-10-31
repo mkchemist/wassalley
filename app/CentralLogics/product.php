@@ -20,10 +20,19 @@ class ProductLogic
 
     public static function get_latest_products($limit = 10, $offset = 1)
     {
+        $branch = request('branch');
+        $category = request("category");
         $paginator = Product::active()->with([
             'rating',
             'unit' => fn($query)=> $query->select('id','name','quantity')
-        ])->latest()->paginate($limit, ['*'], 'page', $offset);
+        ])
+        ->when($branch, function ($query) use($branch) {
+          $query->where("branch_id", $branch);
+        })
+        ->when($category, function ($query) use ($category) {
+          $query->where('category_ids', "LIKE", '%"id":"'.$category.'"%');
+        })
+        ->latest()->paginate($limit, ['*'], 'page', $offset);
         /*$paginator->count();*/
         return [
             'total_size' => $paginator->total(),
@@ -51,7 +60,17 @@ class ProductLogic
 
     public static function get_popular_products($limit = 10, $offset = 1)
     {
-        $paginator = Product::active()->with(['rating'])->orderBy('popularity_count', 'desc')->paginate($limit, ['*'], 'page', $offset);
+        $category = request('category');
+        $branch = request('branch');
+        $paginator = Product::active()->with(['rating'])
+        ->when($category, function ($query) use ($category) {
+          $query->where('category_ids', "LIKE", '%"id":"'.$category.'"%');
+        })
+        ->when($branch, function ($query) use($branch) {
+          $query->where("branch_id", $branch);
+        })
+        ->orderBy('popularity_count', 'desc')
+        ->paginate($limit, ['*'], 'page', $offset);
         /*$paginator->count();*/
         return [
             'total_size' => $paginator->total(),
@@ -72,19 +91,28 @@ class ProductLogic
 
     public static function search_products($name, $limit = 10, $offset = 1)
     {
-        $key = explode(' ', $name);
-        $paginator = Product::active()->with(['rating', 'unit'])->where(function ($q) use ($key) {
-            foreach ($key as $value) {
-                $q->orWhere('name', 'like', "%{$value}%");
-            }
-        })->paginate($limit, ['*'], 'page', $offset);
-
-        return [
-            'total_size' => $paginator->total(),
-            'limit' => $limit,
-            'offset' => $offset,
-            'products' => $paginator->items()
-        ];
+          $key = explode(' ', $name);
+          $category = request('category');
+          $branch = request("branch");
+          $paginator = Product::active()->with(['rating', 'unit'])
+          ->when($category, function ($query) use ($category) {
+            $query->where('category_ids', "LIKE", '%"id":"'.$category.'"%');
+            //$query->whereJsonContains('category_ids', $category);
+          })
+          ->when($branch, function ($query) use($branch) {
+            $query->where("branch_id", $branch);
+          })
+          ->where(function ($q) use ($key) {
+              foreach ($key as $value) {
+                  $q->orWhere('name', 'like', "%{$value}%");
+              }
+          })->paginate($limit, ['*'], 'page', $offset);
+          return [
+              'total_size' => $paginator->total(),
+              'limit' => $limit,
+              'offset' => $offset,
+              'products' => $paginator->items()
+          ];
     }
 
     public static function get_product_review($id)

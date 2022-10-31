@@ -103,6 +103,7 @@
                         <th>{{translate('date')}}</th>
                         <th>{{translate('customer')}}</th>
                         <th>{{translate('branch')}}</th>
+                        <th>{{ translate("Payment Method") }}</th>
                         <th>{{translate('payment')}} {{translate('status')}}</th>
                         <th>{{translate('total')}}</th>
                         <th>{{translate('order')}} {{translate('status')}}</th>
@@ -135,6 +136,7 @@
                                 <label
                                     class="badge badge-soft-primary">{{$order->branch?$order->branch->name:'Branch deleted!'}}</label>
                             </td>
+                            <td>{{ ucfirst(str_replace(['_'], ' ', $order->payment_method)) }}</td>
                             <td>
                                 @if($order->payment_status=='paid')
                                     <span class="badge badge-soft-success">

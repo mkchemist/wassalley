@@ -222,4 +222,32 @@ class CustomerController extends Controller
 
         return response()->json(['status_code' => 200, 'message' => translate('Successfully deleted')], 200);
     }
+
+
+    /**
+     * Update user branch
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateBranch(Request $request)
+    {
+
+      $request->validate([
+        'branch' => ['required', 'exists:branches,id', 'numeric']
+      ]);
+
+
+      $user = $request->user();
+
+      $user->update([
+        'branch_id' => $request->branch
+      ]);
+
+
+      return response()->json([
+        'message' => 'User branch updated'
+      ]);
+
+    }
 }

@@ -149,6 +149,7 @@ class CustomerAuthController extends Controller
             'email' => 'required|unique:users',
             'phone' => 'required|unique:users|min:5|max:20',
             'password' => 'required|min:6',
+            'branch' => ['required', 'exists:branches,id']
         ], [
             'f_name.required' => translate('The first name field is required.'),
             'l_name.required' => translate('The last name field is required.'),
@@ -166,6 +167,7 @@ class CustomerAuthController extends Controller
             'phone' => $request->phone,
             'password' => bcrypt($request->password),
             'temporary_token' => $temporary_token,
+            'branch_id' => $request->branch
         ]);
 
         $phone_verification = Helpers::get_business_settings('phone_verification');

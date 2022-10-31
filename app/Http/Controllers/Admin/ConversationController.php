@@ -129,7 +129,7 @@ class ConversationController extends Controller
         $query->where('f_name', 'LIKE', "%$search%")
         ->orWhere('l_name', 'LIKE', "%$search%");
       })
-      ->paginate(1);
+      ->paginate(10);
 
       return response()->json([
         'view' => view('admin-views.messages.partials._users-list', compact('users'))->render(),

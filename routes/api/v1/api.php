@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'Api\V1', 'middleware'=>'localization'], function () {
 
+
+
     Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
         Route::post('registration', 'CustomerAuthController@registration');
         Route::post('login', 'CustomerAuthController@login');
@@ -85,6 +87,7 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>'localization'], function (
         Route::put('update-profile', 'CustomerController@update_profile');
         Route::put('cm-firebase-token', 'CustomerController@update_cm_firebase_token');
         Route::get('transaction-history', 'CustomerController@get_transaction_history');
+        Route::patch('update-branch', 'CustomerController@updateBranch');
 
         Route::namespace('Auth')->group(function () {
             Route::delete('remove-account', 'CustomerAuthController@remove_account');
@@ -123,9 +126,9 @@ Route::group(['namespace' => 'Api\V1', 'middleware'=>'localization'], function (
             Route::delete('remove', 'WishlistController@remove_from_wishlist');
         });
 
-        Route::group(['prefix' => 'branches'], function () {
-          Route::get('/', 'BranchController@index');
-          Route::get('/show/{id}', 'BranchController@show');
+        Route::group(['prefix' => 'branches', ], function () {
+          Route::get('/', 'BranchController@index')->withoutMiddleware(['auth:api']);
+          Route::get('/show/{id}', 'BranchController@show')->withoutMiddleware(['auth:api']);
         });
     });
 

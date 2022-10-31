@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Model\Branch;
 use App\Model\Conversation;
 use App\Model\CustomerAddress;
 use App\Model\Order;
@@ -20,7 +21,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'f_name', 'l_name', 'phone', 'email', 'password', 'point'
+        'name', 'f_name', 'l_name', 'phone', 'email', 'password', 'point',
+         'branch_id'
     ];
 
     /**
@@ -41,6 +43,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_phone_verified' => 'integer',
         'point' => 'integer',
+    ];
+
+    protected $with = [
+      'branch'
     ];
 
     public function orders()
@@ -76,5 +82,10 @@ class User extends Authenticatable
     public function conversations()
     {
       return $this->hasMany(Conversation::class, 'user_id');
+    }
+
+    public function branch()
+    {
+      return $this->belongsTo(Branch::class);
     }
 }
